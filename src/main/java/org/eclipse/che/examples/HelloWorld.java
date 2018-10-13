@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import okio.ByteString;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONObject;
 
 public class HelloWorld {
     private Regex trimRegex = new Regex("\\s+");
@@ -43,7 +45,11 @@ public class HelloWorld {
     
     public static void main(String... argvs) {
         String time;
-        Map headers = null;
+        Map<String, List<String>> headers=new HashMap<String, List<String>>() {};  
+        List vals = new ArrayList();
+        vals.add("Atna|EwICIMVUkeCdoTBd7CH51HIPMWMIRBQvRqDQmvq54rdTqj4vz9nAyo-FB6-KRJzZiinoiBdag2DJjAIiWgWddJYM-50j35bDwpjukE-dW_XNe1NsVrgEnU3mkouQHcWooJs4eDnv4XXJ1dytM-ffClZ9keLmfL8drpQdwOgEcFM47_280tSyhh6L-iKrGTo5vLg-QKNGOrPrtpddl8cmLnzZ5OOoW8-ULcSkivfd_K_ohLZJLqKANyzyi4e-5IVibM3__TYYt9Pd-kazV8Dkhk7KbbHGv35Tq6qL_BZAbSQjK2V2jUstcJvZWKElI6Djrfk4GjvF0DRuXWryxr-y7SJsiGd_ugpzD_yqyOKI_FbH7Rs5yQ");
+        
+        headers.put("x-amz-access-token", vals);
         String host = "https://flex-capacity-na.amazon.com";
         String canonicalPath = "/GetOffersForProvider?21&serviceAreaIds=21&apiVersion=V2";
         DateTimeFormatter timestampFormater = DateTimeFormat.forPattern("yyyyMMdd'T'HHmmss'Z'");
@@ -56,15 +62,17 @@ public class HelloWorld {
         Pair canonicalRequest = getCanonicalRequest$RabbitAndroidFramework_release(method, host, canonicalPath, headers, time);
         r0[1] = method;
         r0[2] = "rabbit_request";
-//        r0[3] = getStringToSign$RabbitAndroidFramework_release((String) canonicalRequest.first, time);;
+        r0[3] = getStringToSign$RabbitAndroidFramework_release((String) canonicalRequest.getFirst(), time);
 //        
 //        byte[] signatureBytes = sign$RabbitAndroidFramework_release(r0);
 //        String signature = ByteString.of(Arrays.copyOf(signatureBytes, signatureBytes.length)).hex());
-        
-        System.out.println("Hello World " + method + "!");
+
+        System.out.println("ro[1] - " + r0[1]);
+        System.out.println("r0[2] - " + r0[2]);
+        System.out.println("r0[3] - " + r0[3]);
     }
     
-    public final String getStringToSign$RabbitAndroidFramework_release(String canonicalRequest, String time) {
+    public final static String getStringToSign$RabbitAndroidFramework_release(String canonicalRequest, String time) {
         Intrinsics.checkParameterIsNotNull(canonicalRequest, "canonicalRequest");
         Intrinsics.checkParameterIsNotNull(time, "time");
         return "RABBIT3-HMAC-SHA256\n" + time + '\n' + hexSha256$RabbitAndroidFramework_release(canonicalRequest);
@@ -86,17 +94,18 @@ public class HelloWorld {
             }
         }
         Map filteredHeaders = result$iv;
-        String canonicalHeaderString = getCanonicalHeaderString$RabbitAndroidFramework_release(filteredHeaders);
+        char canonicalHeaderString = getCanonicalHeaderString$RabbitAndroidFramework_release(filteredHeaders);
         String signedHeaders = getSignedHeadersString$RabbitAndroidFramework_release(filteredHeaders);
         return new Pair(method + '\n' + canonicalPath + '\n' + canonicalHeaderString + '\n' + signedHeaders, signedHeaders);
     }
     
     public final static String getSignedHeadersString$RabbitAndroidFramework_release(Map<String, ? extends List<String>> headers) {
         Intrinsics.checkParameterIsNotNull(headers, "headers");
-        return CollectionsKt.joinToString(headers.keySet(), ";", null, null, 0, null, null, 62);
+        String jsonString = new JSONObject(headers).toString();   
+        return jsonString;
     }
     
-    public final static String getCanonicalHeaderString$RabbitAndroidFramework_release(Map<String, ? extends List<String>> headers) {
+    public final static char getCanonicalHeaderString$RabbitAndroidFramework_release(Map<String, ? extends List<String>> headers) {
         Intrinsics.checkParameterIsNotNull(headers, "headers");
         Collection destination$iv$iv = new ArrayList(headers.size());
         for (Entry item$iv$iv : headers.entrySet()) {
@@ -107,9 +116,10 @@ public class HelloWorld {
             }
             str = str.toLowerCase();
             Intrinsics.checkExpressionValueIsNotNull(str, "(this as java.lang.String).toLowerCase()");
-            destination$iv$iv.add(stringBuilder.append(str).append(':').append(CollectionsKt.joinToString((Iterable) item$iv$iv.getValue(), BasicMetricEvent.LIST_DELIMITER, null, null, 0, null, new C1460x541fa53a(this), 30)).append('\n').toString());
+//            destination$iv$iv.add(stringBuilder.append(str).append(':').append(CollectionsKt.joinToString((Iterable) item$iv$iv.getValue(), BasicMetricEvent.LIST_DELIMITER, null, null, 0, null, new C1460x541fa53a(this), 30)).append('\n').toString());
         }
-        return CollectionsKt.joinToString((List) destination$iv$iv, "", null, null, 0, null, null, 62);
+//        return CollectionsKt.joinToString((List) destination$iv$iv, "", null, null, 0, null, null, 62);
+        return 'a';
     }
     
     public final static boolean shouldSign$RabbitAndroidFramework_release(String header) {
@@ -117,9 +127,10 @@ public class HelloWorld {
 //        if (header.equals("date") || header.equals("host") || StringsKt.startsWith$default$3705f858(header, "x-amz", false, 2)) {
 //            return true;
 //        }
-          if (header.equals("date") || header.equals("host")) {
-            return true;
+        if (header.equals("date") || header.equals("host")) {
+          return true;
         }
+        
         return false;
     }
     
@@ -162,7 +173,7 @@ public class HelloWorld {
         }
     }
     
-    public final String hexSha256$RabbitAndroidFramework_release(String value) {
+    public final static String hexSha256$RabbitAndroidFramework_release(String value) {
         Intrinsics.checkParameterIsNotNull(value, "value");
         String hex = ByteString.encodeUtf8(value).sha256().hex();
         Intrinsics.checkExpressionValueIsNotNull(hex, "ByteString.encodeUtf8(value).sha256().hex()");
