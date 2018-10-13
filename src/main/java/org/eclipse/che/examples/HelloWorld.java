@@ -60,16 +60,19 @@ public class HelloWorld {
         Intrinsics.checkExpressionValueIsNotNull(method, "(this as java.lang.Strin…ing(startIndex, endIndex)");
 //        Pair canonicalRequest = getCanonicalRequest$RabbitAndroidFramework_release(method, host2, canonicalPath, headers, time);
         Pair canonicalRequest = getCanonicalRequest$RabbitAndroidFramework_release(method, host, canonicalPath, headers, time);
+        r0[0] = "a";
         r0[1] = method;
         r0[2] = "rabbit_request";
         r0[3] = getStringToSign$RabbitAndroidFramework_release((String) canonicalRequest.getFirst(), time);
 //        
-//        byte[] signatureBytes = sign$RabbitAndroidFramework_release(r0);
-//        String signature = ByteString.of(Arrays.copyOf(signatureBytes, signatureBytes.length)).hex());
+        byte[] signatureBytes = sign$RabbitAndroidFramework_release(r0);
+        String signature = ByteString.of(Arrays.copyOf(signatureBytes, signatureBytes.length)).hex();
 
         System.out.println("ro[1] - " + r0[1]);
         System.out.println("r0[2] - " + r0[2]);
         System.out.println("r0[3] - " + r0[3]);
+        System.out.println("signatureBytes - " + signatureBytes);
+        System.out.println("signature - " + signature);
     }
     
     public final static String getStringToSign$RabbitAndroidFramework_release(String canonicalRequest, String time) {
@@ -134,7 +137,7 @@ public class HelloWorld {
         return false;
     }
     
-    public final byte[] sign$RabbitAndroidFramework_release(String... keys) {
+    public final static byte[] sign$RabbitAndroidFramework_release(String... keys) {
         Intrinsics.checkParameterIsNotNull(keys, "keys");
         Iterator it = ArrayIteratorKt.iterator(keys);
         String str = (String) it.next();
@@ -157,7 +160,7 @@ public class HelloWorld {
         return key;
     }
     
-    public final byte[] hmacSha256$RabbitAndroidFramework_release(byte[] data, byte[] key) {
+    public final static byte[] hmacSha256$RabbitAndroidFramework_release(byte[] data, byte[] key) {
 //        Intrinsics.checkParameterIsNotNull(data, UriUtil.DATA_SCHEME);
         Intrinsics.checkParameterIsNotNull(key, "key");
         try {
