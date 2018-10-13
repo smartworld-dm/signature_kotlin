@@ -58,14 +58,14 @@ public class HelloWorld {
         r0 = new String[4];
         String method = time.substring(0, 8);
         Intrinsics.checkExpressionValueIsNotNull(method, "(this as java.lang.Strin…ing(startIndex, endIndex)");
-//        Pair canonicalRequest = getCanonicalRequest$RabbitAndroidFramework_release(method, host2, canonicalPath, headers, time);
-        Pair canonicalRequest = getCanonicalRequest$RabbitAndroidFramework_release(method, host, canonicalPath, headers, time);
+//        Pair canonicalRequest = getCanonicalRequest(method, host2, canonicalPath, headers, time);
+        Pair canonicalRequest = getCanonicalRequest(method, host, canonicalPath, headers, time);
         r0[0] = "a";
         r0[1] = method;
         r0[2] = "rabbit_request";
-        r0[3] = getStringToSign$RabbitAndroidFramework_release((String) canonicalRequest.getFirst(), time);
+        r0[3] = getStringToSign((String) canonicalRequest.getFirst(), time);
 //        
-        byte[] signatureBytes = sign$RabbitAndroidFramework_release(r0);
+        byte[] signatureBytes = sign(r0);
         String signature = ByteString.of(Arrays.copyOf(signatureBytes, signatureBytes.length)).hex();
 
         System.out.println("ro[1] - " + r0[1]);
@@ -75,13 +75,13 @@ public class HelloWorld {
         System.out.println("signature - " + signature);
     }
     
-    public final static String getStringToSign$RabbitAndroidFramework_release(String canonicalRequest, String time) {
+    public final static String getStringToSign(String canonicalRequest, String time) {
         Intrinsics.checkParameterIsNotNull(canonicalRequest, "canonicalRequest");
         Intrinsics.checkParameterIsNotNull(time, "time");
-        return "RABBIT3-HMAC-SHA256\n" + time + '\n' + hexSha256$RabbitAndroidFramework_release(canonicalRequest);
+        return "RABBIT3-HMAC-SHA256\n" + time + '\n' + hexSha256(canonicalRequest);
     }
     
-    public final static Pair<String, String> getCanonicalRequest$RabbitAndroidFramework_release(String method, String host, String canonicalPath, Map<String, List<String>> headers, String time) {
+    public final static Pair<String, String> getCanonicalRequest(String method, String host, String canonicalPath, Map<String, List<String>> headers, String time) {
         Intrinsics.checkParameterIsNotNull(method, "method");
         Intrinsics.checkParameterIsNotNull(host, "host");
         Intrinsics.checkParameterIsNotNull(canonicalPath, "canonicalPath");
@@ -92,23 +92,23 @@ public class HelloWorld {
         Map<String, List<String>> $receiver$iv = headers;
         LinkedHashMap result$iv = new LinkedHashMap();
         for (Entry entry$iv : $receiver$iv.entrySet()) {
-            if (shouldSign$RabbitAndroidFramework_release((String) entry$iv.getKey())) {
+            if (shouldSign((String) entry$iv.getKey())) {
                 result$iv.put(entry$iv.getKey(), entry$iv.getValue());
             }
         }
         Map filteredHeaders = result$iv;
-        char canonicalHeaderString = getCanonicalHeaderString$RabbitAndroidFramework_release(filteredHeaders);
-        String signedHeaders = getSignedHeadersString$RabbitAndroidFramework_release(filteredHeaders);
+        char canonicalHeaderString = getCanonicalHeaderString(filteredHeaders);
+        String signedHeaders = getSignedHeadersString(filteredHeaders);
         return new Pair(method + '\n' + canonicalPath + '\n' + canonicalHeaderString + '\n' + signedHeaders, signedHeaders);
     }
     
-    public final static String getSignedHeadersString$RabbitAndroidFramework_release(Map<String, ? extends List<String>> headers) {
+    public final static String getSignedHeadersString(Map<String, ? extends List<String>> headers) {
         Intrinsics.checkParameterIsNotNull(headers, "headers");
         String jsonString = new JSONObject(headers).toString();   
         return jsonString;
     }
     
-    public final static char getCanonicalHeaderString$RabbitAndroidFramework_release(Map<String, ? extends List<String>> headers) {
+    public final static char getCanonicalHeaderString(Map<String, ? extends List<String>> headers) {
         Intrinsics.checkParameterIsNotNull(headers, "headers");
         Collection destination$iv$iv = new ArrayList(headers.size());
         for (Entry item$iv$iv : headers.entrySet()) {
@@ -125,7 +125,7 @@ public class HelloWorld {
         return 'a';
     }
     
-    public final static boolean shouldSign$RabbitAndroidFramework_release(String header) {
+    public final static boolean shouldSign(String header) {
         Intrinsics.checkParameterIsNotNull(header, "header");
 //        if (header.equals("date") || header.equals("host") || StringsKt.startsWith$default$3705f858(header, "x-amz", false, 2)) {
 //            return true;
@@ -137,7 +137,7 @@ public class HelloWorld {
         return false;
     }
     
-    public final static byte[] sign$RabbitAndroidFramework_release(String... keys) {
+    public final static byte[] sign(String... keys) {
         Intrinsics.checkParameterIsNotNull(keys, "keys");
         Iterator it = ArrayIteratorKt.iterator(keys);
         String str = (String) it.next();
@@ -155,12 +155,12 @@ public class HelloWorld {
             }
             Object bytes = str.getBytes(charset);
             Intrinsics.checkExpressionValueIsNotNull(bytes, "(this as java.lang.String).getBytes(charset)");
-            key = hmacSha256$RabbitAndroidFramework_release((byte[]) bytes, key);
+            key = hmacSha256((byte[]) bytes, key);
         }
         return key;
     }
     
-    public final static byte[] hmacSha256$RabbitAndroidFramework_release(byte[] data, byte[] key) {
+    public final static byte[] hmacSha256(byte[] data, byte[] key) {
 //        Intrinsics.checkParameterIsNotNull(data, UriUtil.DATA_SCHEME);
         Intrinsics.checkParameterIsNotNull(key, "key");
         try {
@@ -176,7 +176,7 @@ public class HelloWorld {
         }
     }
     
-    public final static String hexSha256$RabbitAndroidFramework_release(String value) {
+    public final static String hexSha256(String value) {
         Intrinsics.checkParameterIsNotNull(value, "value");
         String hex = ByteString.encodeUtf8(value).sha256().hex();
         Intrinsics.checkExpressionValueIsNotNull(hex, "ByteString.encodeUtf8(value).sha256().hex()");
