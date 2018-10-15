@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ import kotlin.Metadata;
 import kotlin.Pair;
 import kotlin.TypeCastException;
 import kotlin.collections.CollectionsKt;
+import static kotlin.collections.CollectionsKt.listOf;
 import kotlin.jvm.internal.ArrayIteratorKt;
 import kotlin.jvm.internal.Intrinsics;
 import kotlin.text.Charsets;
@@ -44,35 +46,62 @@ public class HelloWorld {
     }
     
     public static void main(String... argvs) {
-        String time;
-        Map<String, List<String>> headers=new HashMap<String, List<String>>() {};  
-        List vals = new ArrayList();
-        vals.add("Atna|EwICIMVUkeCdoTBd7CH51HIPMWMIRBQvRqDQmvq54rdTqj4vz9nAyo-FB6-KRJzZiinoiBdag2DJjAIiWgWddJYM-50j35bDwpjukE-dW_XNe1NsVrgEnU3mkouQHcWooJs4eDnv4XXJ1dytM-ffClZ9keLmfL8drpQdwOgEcFM47_280tSyhh6L-iKrGTo5vLg-QKNGOrPrtpddl8cmLnzZ5OOoW8-ULcSkivfd_K_ohLZJLqKANyzyi4e-5IVibM3__TYYt9Pd-kazV8Dkhk7KbbHGv35Tq6qL_BZAbSQjK2V2jUstcJvZWKElI6Djrfk4GjvF0DRuXWryxr-y7SJsiGd_ugpzD_yqyOKI_FbH7Rs5yQ");
-        
-        headers.put("x-amz-access-token", vals);
-        String host = "https://flex-capacity-na.amazon.com";
-        String canonicalPath = "/GetOffersForProvider?21&serviceAreaIds=21&apiVersion=V2";
-        DateTimeFormatter timestampFormater = DateTimeFormat.forPattern("yyyyMMdd'T'HHmmss'Z'");
-        time = timestampFormater.print(DateTime.now());
-        String r0[];
-        r0 = new String[4];
-        String method = time.substring(0, 8);
+        String method = "GET";
         Intrinsics.checkExpressionValueIsNotNull(method, "(this as java.lang.Strin…ing(startIndex, endIndex)");
-//        Pair canonicalRequest = getCanonicalRequest(method, host2, canonicalPath, headers, time);
-        Pair canonicalRequest = getCanonicalRequest(method, host, canonicalPath, headers, time);
-        r0[0] = "a";
-        r0[1] = method;
-        r0[2] = "rabbit_request";
-        r0[3] = getStringToSign((String) canonicalRequest.getFirst(), time);
-//        
-        byte[] signatureBytes = sign(r0);
-        String signature = ByteString.of(Arrays.copyOf(signatureBytes, signatureBytes.length)).hex();
+System.out.println("LOG: method - " + method);
+        
+        String time;
+        DateTimeFormatter timestampFormater = DateTimeFormat.forPattern("yyyyMMdd'T'HHmmss'Z'");
+//        time = timestampFormater.print(DateTime.now());
+        time = "20181014T100617Z";
+System.out.println("LOG: time - " + time);
 
-        System.out.println("ro[1] - " + r0[1]);
-        System.out.println("r0[2] - " + r0[2]);
-        System.out.println("r0[3] - " + r0[3]);
-        System.out.println("signatureBytes - " + signatureBytes);
+        Map<String, String> headers = new LinkedHashMap(8);
+        headers.put("Content-Type", "application/json");
+        headers.put("User-Agent", "Dalvik/2.1.0 (Linux; U; Android 7.1.2; SM-N955U Build/NMF26X) RabbitAndroid/3.3.115.0");
+        headers.put("X-Flex-Client-Time", "1539291535546");
+        headers.put("x-flex-instance-id", "33c09223-f6a4-488a-9136-60a46071689d");
+        headers.put("host", "flex-capacity-na.amazon.co");
+        headers.put("x-amz-access-token", "Atna|EwICIE9afyH834P1vcKVWTynSG9FdlqvW3FtBSQOgqJNcaHOrkeWfJJrEpmOmBzolnySKAWdGWoe_UWtxt8zHSGzM4JzawEyi9cbQ3reJiBPh5SoxEb85a3VSBLpHwmxRPGiiym7Jzi1J2ExfgXhV6-MErzuSUgwidf9STujeCwuhwdmDj6mkE2MSxN1mW5BmE4CysVu0BfN_yaZO5fPUy6-_--tHhTA-ZPwv-qfOFlqWiGufaaxSaLFnWSm0p3g8AKrjMOWxVq_3JEjbRpwVG8y8g_q3JVDHC5uDBgVYr9wp5DY3vfjG7yJxlHMhLJM4NfWL3ndLRjxmBu--BV0glh2eUMl");
+        headers.put("x-amz-date", time);
+        headers.put("x-amzn-requestid", "a1259f56-f2d6-4519-81c0-9795525d4f95");
+        System.out.println("LOG: HEADER ENTRY - " + headers.entrySet());
+        
+        String host = "flex-capacity-na.amazon.com";
+        String canonicalPath = "/GetOffersForProvider";
+        
+        Pair canonicalRequest = getCanonicalRequest(method, host, canonicalPath, headers, time);
+        System.out.println("LOG: canonicalRequest.getFirst() - " + canonicalRequest.getFirst());
+        
+        String r0[];
+        r0 = new String[3];
+        r0[0] = time.substring(0, 8);
+        r0[1] = "rabbit_request";
+        r0[2] = getStringToSign((String) canonicalRequest.getFirst(), time);
+        System.out.println("LOG: r0[2] - " + r0[2]);
+        
+        byte[] signatureBytes = sign(r0);
+        System.out.println("LOG: signatureBytes - " + signatureBytes);
+        
+        String signature = ByteString.of(Arrays.copyOf(signatureBytes, signatureBytes.length)).hex();
         System.out.println("signature - " + signature);
+    }
+    
+    public final static Pair<String, String> getCanonicalRequest(String method, String host, String canonicalPath, Map<String, String> headers, String time) {
+        Map<String, String> receiver = headers;
+        Map result = new LinkedHashMap();
+        for (Entry entry : receiver.entrySet()) {
+            if (shouldSign((String) entry.getKey()))
+                result.put(entry.getKey(), entry.getValue());
+        }
+        Map filteredHeaders = result;
+        
+        String canonicalHeaderString = getCanonicalHeaderString(filteredHeaders);
+        String signedHeaders = getSignedHeadersString(filteredHeaders);
+System.out.println("LOG: canonical header - " + canonicalHeaderString);
+System.out.println("LOG: signed header - " + signedHeaders);
+
+        return new Pair(method + '\n' + canonicalPath + '\n' + canonicalHeaderString + '\n' + signedHeaders, signedHeaders);
     }
     
     public final static String getStringToSign(String canonicalRequest, String time) {
@@ -81,57 +110,47 @@ public class HelloWorld {
         return "RABBIT3-HMAC-SHA256\n" + time + '\n' + hexSha256(canonicalRequest);
     }
     
-    public final static Pair<String, String> getCanonicalRequest(String method, String host, String canonicalPath, Map<String, List<String>> headers, String time) {
-        Intrinsics.checkParameterIsNotNull(method, "method");
-        Intrinsics.checkParameterIsNotNull(host, "host");
-        Intrinsics.checkParameterIsNotNull(canonicalPath, "canonicalPath");
-        Intrinsics.checkParameterIsNotNull(headers, "headers");
-        Intrinsics.checkParameterIsNotNull(time, "time");
-        headers.put("x-amz-date", CollectionsKt.listOf(time));
-        headers.put("host", CollectionsKt.listOf(host));
-        Map<String, List<String>> $receiver$iv = headers;
-        LinkedHashMap result$iv = new LinkedHashMap();
-        for (Entry entry$iv : $receiver$iv.entrySet()) {
-            if (shouldSign((String) entry$iv.getKey())) {
-                result$iv.put(entry$iv.getKey(), entry$iv.getValue());
-            }
-        }
-        Map filteredHeaders = result$iv;
-        char canonicalHeaderString = getCanonicalHeaderString(filteredHeaders);
-        String signedHeaders = getSignedHeadersString(filteredHeaders);
-        return new Pair(method + '\n' + canonicalPath + '\n' + canonicalHeaderString + '\n' + signedHeaders, signedHeaders);
-    }
-    
     public final static String getSignedHeadersString(Map<String, ? extends List<String>> headers) {
         Intrinsics.checkParameterIsNotNull(headers, "headers");
-        String jsonString = new JSONObject(headers).toString();   
-        return jsonString;
+        Iterator iterator = headers.keySet().iterator();
+        
+        String str = "";
+        
+        for (String entry : headers.keySet())
+            str = str.concat(entry).concat(";");
+        
+        str = str.substring(0, str.length() - 1);
+        return str;
     }
     
-    public final static char getCanonicalHeaderString(Map<String, ? extends List<String>> headers) {
+    public final static String getCanonicalHeaderString(Map<String, ? extends List<String>> headers) {
         Intrinsics.checkParameterIsNotNull(headers, "headers");
-        Collection destination$iv$iv = new ArrayList(headers.size());
-        for (Entry item$iv$iv : headers.entrySet()) {
+        Collection destination = new ArrayList(headers.size());
+        for (Entry item : headers.entrySet()) {
             StringBuilder stringBuilder = new StringBuilder();
-            String str = (String) item$iv$iv.getKey();
-            if (str == null) {
+            String str = (String) item.getKey();
+            
+            if (str == null) 
                 throw new TypeCastException("null cannot be cast to non-null type java.lang.String");
-            }
+            
             str = str.toLowerCase();
             Intrinsics.checkExpressionValueIsNotNull(str, "(this as java.lang.String).toLowerCase()");
-//            destination$iv$iv.add(stringBuilder.append(str).append(':').append(CollectionsKt.joinToString((Iterable) item$iv$iv.getValue(), BasicMetricEvent.LIST_DELIMITER, null, null, 0, null, new C1460x541fa53a(this), 30)).append('\n').toString());
+            
+            destination.add(stringBuilder.append(str).append(':').append(item.getValue()).append('\n').toString());
         }
-//        return CollectionsKt.joinToString((List) destination$iv$iv, "", null, null, 0, null, null, 62);
-        return 'a';
+            
+        String str = "";
+        for (Object entry : destination)
+            str = str.concat(entry.toString());
+        
+        return str;
     }
     
     public final static boolean shouldSign(String header) {
         Intrinsics.checkParameterIsNotNull(header, "header");
-//        if (header.equals("date") || header.equals("host") || StringsKt.startsWith$default$3705f858(header, "x-amz", false, 2)) {
-//            return true;
-//        }
-        if (header.equals("date") || header.equals("host")) {
-          return true;
+
+        if (header.equals("date") || header.equals("host") || header.startsWith("x-amz")) {
+            return true;
         }
         
         return false;
@@ -153,15 +172,17 @@ public class HelloWorld {
             if (str == null) {
                 throw new TypeCastException("null cannot be cast to non-null type java.lang.String");
             }
+System.out.println("LOG: str - " + str);
             Object bytes = str.getBytes(charset);
+System.out.println("LOG: bytes - " + bytes);
             Intrinsics.checkExpressionValueIsNotNull(bytes, "(this as java.lang.String).getBytes(charset)");
             key = hmacSha256((byte[]) bytes, key);
+System.out.println("LOG: key - " + key);
         }
         return key;
     }
     
     public final static byte[] hmacSha256(byte[] data, byte[] key) {
-//        Intrinsics.checkParameterIsNotNull(data, UriUtil.DATA_SCHEME);
         Intrinsics.checkParameterIsNotNull(key, "key");
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
